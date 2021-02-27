@@ -1,17 +1,19 @@
-# Put title of your app here
+# Wonderfluff
 
 <!--- Replace <OWNER> with your Github Username and <REPOSITORY> with the name of your repository. -->
 <!--- You can find both of these in the url bar when you open your repository in github. -->
-![Workflow result](https://github.com/<OWNER>/<REPOSITORY>/workflows/Check/badge.svg)
+![Workflow result](https://github.com/yannickpulver/wonderfluff/workflows/Check/badge.svg)
 
 
 ## :scroll: Description
 <!--- Describe your app in one or two sentences -->
+Wonderfluff is a puppy adoption app written with Jetpack Compose. You can adopt puppies in a parallel universe.
 
 
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
 <!--- What are you especially proud of? -->
+It was interesting to see how easy it is to craft lists with Compose. No more adapters & boilerplate code. I'm really looking forward to digging into it even deeper soon!
 
 
 ## :camera_flash: Screenshots
