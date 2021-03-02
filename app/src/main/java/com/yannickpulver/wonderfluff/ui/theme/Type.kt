@@ -30,8 +30,9 @@ val Typography = Typography(
     ),
 
     h4 = TextStyle(
-        fontFamily = FontFamily.Monospace,
+        fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.ExtraBold,
+        letterSpacing = 0.5.sp,
         fontSize = 16.sp
     ),
     button = TextStyle(

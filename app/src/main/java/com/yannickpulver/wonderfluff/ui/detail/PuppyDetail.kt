@@ -58,6 +58,7 @@ import com.yannickpulver.wonderfluff.R
 import com.yannickpulver.wonderfluff.domain.Puppy
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
+
 @Composable
 fun PuppyDetail(id: Int?, viewModel: PuppyDetailViewModel, navController: NavHostController) {
     if (id != null) {

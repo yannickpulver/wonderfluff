@@ -40,6 +40,19 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += [
+                "-Xopt-in=kotlin.RequiresOptIn",
+                "-Xopt-in=kotlin.OptIn",
+                "-Xopt-in=kotlin.ExperimentalStdlibApi",
+                "-Xopt-in=kotlinx.serialization.ExperimentalSerializationApi",
+                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+                "-Xopt-in=androidx.compose.material.ExperimentalMaterialApi",
+                "-Xopt-in=androidx.compose.animation.ExperimentalAnimationApi",
+                "-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi",
+                "-Xuse-experimental=kotlinx.coroutines.ObsoleteCoroutinesApi",
+                "-Xuse-experimental=kotlinx.coroutines.FlowPreview",
+        ]
     }
 
     buildFeatures {
