@@ -20,7 +20,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +30,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.Card
 import androidx.compose.material.FloatingActionButton
@@ -71,58 +71,74 @@ import kotlinx.coroutines.launch
 @Composable
 fun PuppyList(viewModel: PuppyListViewModel, navController: NavHostController) {
     val puppies: List<Puppy> by viewModel.state.collectAsState()
+
     val scrollState = rememberScrollState()
-
-    val showExpandedButton = scrollState.value == scrollState.maxValue
-
     val scaffoldState = rememberBottomSheetScaffoldState()
-    val scope = rememberCoroutineScope()
 
     BottomSheetScaffold(
         topBar = { PuppyAppBar() },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        when (scaffoldState.bottomSheetState.currentValue) {
-                            BottomSheetValue.Collapsed -> scaffoldState.bottomSheetState.expand()
-                            BottomSheetValue.Expanded -> scaffoldState.bottomSheetState.collapse()
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .navigationBarsPadding()
-            ) {
-                Row(modifier = Modifier.padding(horizontal = 16.dp)) {
-                    when (scaffoldState.bottomSheetState.currentValue) {
-                        BottomSheetValue.Collapsed -> Icon(imageVector = Icons.Filled.FilterList, contentDescription = "Open Filters")
-                        BottomSheetValue.Expanded -> Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
-                    }
-
-                    AnimatedVisibility(visible = showExpandedButton) {
-                        Text(
-                            text = "Filters",
-                            style = MaterialTheme.typography.h4,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
-                }
-            }
-        },
-        sheetContent = {
-            Column(Modifier.padding(16.dp)) {
-                Spacer(modifier = Modifier.height(100.dp))
-                Text(text = "Hi")
-                Spacer(modifier = Modifier.height(100.dp))
-            }
-        },
+        floatingActionButton = { FilterButton(scaffoldState, scrollState) },
+        sheetContent = { FilterContent() },
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         scaffoldState = scaffoldState,
         sheetPeekHeight = 56.dp,
+    ) {
+        PuppyList(puppies, navController, scrollState)
+    }
+}
 
-        ) {
-        Box {
-            PuppyList(puppies, navController, scrollState)
+@Composable
+private fun FilterContent() {
+    Column(Modifier.padding(16.dp)) {
+        Spacer(modifier = Modifier.height(100.dp))
+        Text(text = "Hi")
+        Spacer(modifier = Modifier.height(100.dp))
+    }
+}
+
+@Composable
+private fun FilterButton(
+    scaffoldState: BottomSheetScaffoldState,
+    scrollState: ScrollState
+) {
+    val scope = rememberCoroutineScope()
+    val expanded = scrollState.value == scrollState.maxValue
+
+    FloatingActionButton(
+        contentColor = White,
+        onClick = {
+            scope.launch {
+                when (scaffoldState.bottomSheetState.currentValue) {
+                    BottomSheetValue.Collapsed -> scaffoldState.bottomSheetState.expand()
+                    BottomSheetValue.Expanded -> scaffoldState.bottomSheetState.collapse()
+                }
+            }
+        },
+        modifier = Modifier
+            .navigationBarsPadding()
+    ) {
+        Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+            AnimatedVisibility(visible = scaffoldState.bottomSheetState.isCollapsed) {
+                Icon(
+                    imageVector = Icons.Filled.FilterList,
+                    contentDescription = "Open Filters"
+                )
+            }
+
+            AnimatedVisibility(visible = scaffoldState.bottomSheetState.isExpanded) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Close"
+                )
+            }
+
+            AnimatedVisibility(visible = expanded) {
+                Text(
+                    text = "Filters",
+                    style = MaterialTheme.typography.body1,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
         }
     }
 }

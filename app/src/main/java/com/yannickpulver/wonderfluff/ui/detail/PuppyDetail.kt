@@ -15,6 +15,7 @@
  */
 package com.yannickpulver.wonderfluff.ui.detail
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +28,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
@@ -41,6 +42,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Pets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -56,6 +58,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.yannickpulver.wonderfluff.R
 import com.yannickpulver.wonderfluff.domain.Puppy
+import com.yannickpulver.wonderfluff.ui.theme.White
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 
 
@@ -85,6 +89,9 @@ fun PuppyDetail(id: Int?, viewModel: PuppyDetailViewModel, navController: NavHos
 
 @Composable
 fun PuppyContent(viewModel: PuppyDetailViewModel, navController: NavHostController, puppy: Puppy) {
+    val scrollState = rememberScrollState()
+    val showExpandedButton = scrollState.value == scrollState.maxValue
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -111,13 +118,16 @@ fun PuppyContent(viewModel: PuppyDetailViewModel, navController: NavHostControll
                 elevation = 0.dp,
                 backgroundColor = MaterialTheme.colors.background
             )
+        },
+        floatingActionButton = {
+            AdoptButton(puppy, showExpandedButton) { viewModel.adopt(puppy.id) }
         }
     ) {
         Column(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxHeight()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
         ) {
             PuppyImage(puppy)
             Spacer(modifier = Modifier.height(16.dp))
@@ -126,25 +136,30 @@ fun PuppyContent(viewModel: PuppyDetailViewModel, navController: NavHostControll
             PawerfulFact(puppy)
             Spacer(modifier = Modifier.height(16.dp))
             Pupistics(puppy)
-            Spacer(modifier = Modifier.height(16.dp))
-            AdoptButton(viewModel, puppy)
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(102.dp))
         }
     }
 }
 
 @Composable
 private fun AdoptButton(
-    viewModel: PuppyDetailViewModel,
-    puppy: Puppy
+    puppy: Puppy,
+    expanded: Boolean,
+    onClick: () -> Unit
 ) {
-    Button(
-        onClick = {
-            viewModel.adopt(puppy.id)
-        },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(text = "Adopt \"${puppy.name}\" in paralell universe")
+    FloatingActionButton(contentColor = White,
+        modifier = Modifier
+            .navigationBarsPadding(), onClick = { onClick() }) {
+        Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Icon(Icons.Filled.Home, "Adopt")
+            AnimatedVisibility(visible = expanded) {
+                Text(
+                    text = "Adobt ${puppy.name}",
+                    style = MaterialTheme.typography.body1,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+            }
+        }
     }
 }
 
